@@ -1,9 +1,10 @@
 export interface MonthCalendar {
   dayNumber: number;
-  isCurrentMonthDay: boolean;
+  monthOffset: number;
 }
 
 export interface MonthDate {
   month: number,
-  year: number
+  year: number,
+  day?: number
 }

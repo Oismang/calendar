@@ -21,17 +21,17 @@ export const getMonthCalendar = ({month, year}: MonthDate): MonthCalendar[] => {
     if (i < firstDayOfMonth) {
       return {
         dayNumber: previousMonthDays - firstDayOfMonth + i + 1,
-        isCurrentMonthDay: false
+        monthOffset: -1
       }
     } else if (i >= firstDayOfMonth && currentDaysCounter <= currentMonthDays) {
       return {
         dayNumber: currentDaysCounter++,
-        isCurrentMonthDay: true
+        monthOffset: 0
       }
     } else {
       return {
         dayNumber: lastDaysCounter++,
-        isCurrentMonthDay: false
+        monthOffset: 1
       }
     }
   });

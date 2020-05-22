@@ -1,21 +1,42 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import AppText from '../../components/apptext/AppText';
-import { GRAY, DARK, YELLOW } from '../../constants/colors';
-import { MonthCalendar } from '../../utils/types';
+import { DARK, GRAY, YELLOW } from '../../constants/colors';
+import { CREATE_NOTIFICATION_SCREEN, MONTH_SCREEN_ID } from '../../constants/screens';
+import { MonthCalendar, MonthDate } from '../../utils/types';
+import { calcNewDate } from '../../utils/date';
 
 interface DayCellProps extends MonthCalendar {
-  isCurrentDay: boolean
+  isCurrentDay: boolean;
+  displayDate: MonthDate;
 }
 
 const DayCell: React.FC<DayCellProps> = (props) => {
-  const grayDayStyle = props.isCurrentMonthDay ? {} : styles.grayDay;
+  const grayDayStyle = props.monthOffset === 0 ? {} : styles.grayDay;
   const currentDayStyle = props.isCurrentDay ? styles.currentDay : {}
 
+  const goTo = () => {
+    const date: MonthDate = {
+      ...calcNewDate(props.displayDate, props.monthOffset),
+      day: props.dayNumber
+    };
+    Navigation.push(MONTH_SCREEN_ID, {
+      component: {
+        name: CREATE_NOTIFICATION_SCREEN,
+        passProps: {
+          date
+        }
+      }
+    });
+  }
+
   return (
-    <View style={[styles.calendarCell, currentDayStyle]}>
-      <AppText style={{...grayDayStyle, ...currentDayStyle}}>{props.dayNumber}</AppText>
-    </View>
+    <TouchableWithoutFeedback onPress={goTo}>
+      <View style={[styles.calendarCell, currentDayStyle]}>
+        <AppText style={{ ...grayDayStyle, ...currentDayStyle }}>{props.dayNumber}</AppText>
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
 

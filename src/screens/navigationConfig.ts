@@ -1,36 +1,54 @@
 import { Navigation } from 'react-native-navigation';
-import { APP_SCREEN, DAY_SCREEN, THREE_DAYS_SCREEN, WEEK_SCREEN, MONTH_SCREEN } from '../constants/screens';
-import App from '../App';
-import DayScreen from './day/DayScreen';
-import ThreeDaysScreen from './threedays/ThreeDaysScreen';
-import WeekScreen from './week/WeekScreen';
-import MonthScreen from './month/MonthScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { DARK, WHITE, YELLOW } from '../constants/colors';
+import { BOTTOM_TABS_ID, CREATE_NOTIFICATION_SCREEN, DAY_SCREEN, DAY_SCREEN_ID, MONTH_SCREEN, MONTH_SCREEN_ID, THREE_DAYS_SCREEN, THREE_DAYS_SCREEN_ID, WEEK_SCREEN, WEEK_SCREEN_ID } from '../constants/screens';
+import CreateNotificationScreen from './createnotification/CreateNotificationScreen';
+import DayScreen from './day/DayScreen';
+import MonthScreen from './month/MonthScreen';
+import ThreeDaysScreen from './threedays/ThreeDaysScreen';
+import WeekScreen from './week/WeekScreen';
 
 Navigation.setDefaultOptions({
   topBar: {
     visible: false,
     drawBehind: true,
     animate: false,
+    background: {
+      color: DARK
+    },
+    title: {
+      color: WHITE
+    },
+    backButton: {
+      color: WHITE
+    }
   },
   bottomTabs: {
     currentTabIndex: 3,
-    backgroundColor: DARK
+    backgroundColor: DARK,
+    animate: false
   },
   bottomTab: {
     iconColor: WHITE,
     selectedIconColor: YELLOW,
     selectedTextColor: YELLOW
+  },
+  animations: {
+    push: {
+      enabled: false
+    },
+    pop: {
+      enabled: false
+    }
   }
 });
 
 export const registerScreens = () => {
-  Navigation.registerComponent(APP_SCREEN, () => App);
   Navigation.registerComponent(DAY_SCREEN, () => DayScreen);
   Navigation.registerComponent(THREE_DAYS_SCREEN, () => ThreeDaysScreen);
   Navigation.registerComponent(WEEK_SCREEN, () => WeekScreen);
   Navigation.registerComponent(MONTH_SCREEN, () => MonthScreen);
+  Navigation.registerComponent(CREATE_NOTIFICATION_SCREEN, () => CreateNotificationScreen);
 }
 
 export const createBottomTabs = async () => {
@@ -45,10 +63,12 @@ export const createBottomTabs = async () => {
     children: [
       {
         stack: {
+          id: BOTTOM_TABS_ID,
           children: [
             {
               component: {
-                name: DAY_SCREEN
+                name: DAY_SCREEN,
+                id: DAY_SCREEN_ID
               }
             },
           ],
@@ -65,7 +85,8 @@ export const createBottomTabs = async () => {
           children: [
             {
               component: {
-                name: THREE_DAYS_SCREEN
+                name: THREE_DAYS_SCREEN,
+                id: THREE_DAYS_SCREEN_ID
               }
             }
           ],
@@ -82,7 +103,8 @@ export const createBottomTabs = async () => {
           children: [
             {
               component: {
-                name: WEEK_SCREEN
+                name: WEEK_SCREEN,
+                id: WEEK_SCREEN_ID
               }
             }
           ],
@@ -99,7 +121,8 @@ export const createBottomTabs = async () => {
           children: [
             {
               component: {
-                name: MONTH_SCREEN
+                name: MONTH_SCREEN,
+                id: MONTH_SCREEN_ID
               }
             }
           ],

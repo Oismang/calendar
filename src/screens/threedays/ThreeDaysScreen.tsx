@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, View, Button, Animated } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 
 const ThreeDaysScreen = () => {
   const date = new Date();
@@ -7,11 +8,19 @@ const ThreeDaysScreen = () => {
 
   let [count, setCount] = useState(0);
 
+  const sendNotify = () => {
+    PushNotification.localNotificationSchedule({
+      title: "УВЕДОМЛЕНИЕ БЛЯТЬ",
+      message: "АЛАЛАЛАЛААОАОАОАООАОАОААОАОАОАОАОААООААОАООА", // (required)
+      date: new Date(2019, 10, 10), // in 60 secs
+    });
+  }
+
 	return (
 		<View>
 			<Text>date: {date.toString()}</Text>
 			<Text>dateRef: {dateRef.toString()}</Text>
-      <Button title={"click"} onPress={() => setCount(count++)}/>
+      <Button title={"click"} onPress={() => sendNotify()}/>
 		</View>
 	)
 }

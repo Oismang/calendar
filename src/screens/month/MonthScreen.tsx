@@ -1,17 +1,21 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Text, Button, ScrollView, Dimensions, Animated, PanResponder } from 'react-native';
+import React, { useRef } from 'react';
+import { Animated, Dimensions, PanResponder, StyleSheet, View } from 'react-native';
 import AppHeaderText from '../../components/appheadertext/AppHeaderText';
 import AppText from '../../components/apptext/AppText';
+import IconButton, { IconTypes } from '../../components/iconbutton/IconButton';
 import { GRAY, GRAY_LIGHT, YELLOW } from '../../constants/colors';
 import { DAYS_OF_WEEK, MONTH, MONTH_CALENDAR_HEIGHT } from '../../constants/common';
-import { getMonthCalendar, calcNewDate } from '../../utils/date';
-import DayCell from './DayCell';
+import { calcNewDate, getMonthCalendar } from '../../utils/date';
 import { MonthCalendar, MonthDate } from '../../utils/types';
-import IconButton, { IconTypes } from '../../components/iconbutton/IconButton';
+import DayCell from './DayCell';
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-const MonthScreen = () => {
+interface MonthScreenProps {
+
+}
+
+const MonthScreen: React.FC<MonthScreenProps> = (props) => {
   const date = useRef(new Date()).current;
   const [displayDate, setDisplayDate] = React.useState<MonthDate>({
     month: date.getMonth(),
@@ -22,8 +26,7 @@ const MonthScreen = () => {
 
   const panResponderCalendar = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: (e, state) => true,
-      onMoveShouldSetPanResponder: (e, state) => true,
+      onMoveShouldSetPanResponder: (e, state) => !(state.dx === 0 && state.dy === 0),  
       onPanResponderMove: Animated.event([null, { dx: calendarPan }], { useNativeDriver: false }),
       onPanResponderRelease: (e, { vx, dx }) => {
         if (Math.abs(vx) >= 0.5 || Math.abs(dx) >= 0.5 * SCREEN_WIDTH) {
@@ -73,7 +76,8 @@ const MonthScreen = () => {
     const days: MonthCalendar[] = getMonthCalendar(displayDate);
     return days.map((day, i) => <DayCell key={i}
       {...day}
-      isCurrentDay={day.isCurrentMonthDay && date.getDate() === day.dayNumber && date.getMonth() === displayDate.month}
+      displayDate={displayDate}
+      isCurrentDay={day.monthOffset === 0 && date.getDate() === day.dayNumber && date.getMonth() === displayDate.month}
     />);
   };
 
