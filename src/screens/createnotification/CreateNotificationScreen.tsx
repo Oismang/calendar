@@ -1,40 +1,91 @@
-import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import React, { useState } from 'react';
+import { Button, ScrollView, StyleSheet, View } from 'react-native';
+import PushNotification from 'react-native-push-notification';
+import AppDropdown from '../../components/appdropdown/AppDropdown';
 import AppHeaderText from '../../components/appheadertext/AppHeaderText';
-import { GRAY } from '../../constants/colors';
-import { MonthDate } from '../../utils/types';
-import AppTextInput from '../../components/apptextinput/AppTextInput';
 import AppText from '../../components/apptext/AppText';
+import AppTextInput from '../../components/apptextinput/AppTextInput';
+import AppTimeInput, { Time } from '../../components/apptimeinput/AppTimeInput';
+import { GRAY } from '../../constants/colors';
+import { REPEAT_DATA, Repeat } from '../../constants/common';
+import { MonthDate } from '../../utils/types';
 
 interface CreateNotificationScreenProps {
   date: MonthDate;
 }
 
 const CreateNotificationScreen: React.FC<CreateNotificationScreenProps> = (props) => {
+  const date = new Date();
+
+  const [text, setText] = useState("");
+  const [time, setTime] = React.useState<Time>({
+    hours: `${date.getHours()}`,
+    minutes: `${date.getMinutes()}`
+  });
+  const [repeat, setRepeat] = useState(Repeat.NOT);
+
+  const onButtonPress = () => {
+    PushNotification.localNotificationSchedule({
+      title: "УВЕДОМЛЕНИЕ БЛЯТЬ",
+      message: text, // (required)
+      date: new Date(2019, 10, 10), // in 60 secs
+    });
+  }
 
   return (
-    <View style={styles.container}>
-      <AppHeaderText style={styles.header}>Дата: {props.date.day}/{props.date.month}/{props.date.year}г.</AppHeaderText>
+    <ScrollView style={styles.container}>
+      <AppHeaderText style={styles.header}>
+        Дата: {props.date.day}.{props.date.month}.{props.date.year}г.
+      </AppHeaderText>
       <View style={styles.form}>
-        <AppText>Текст напоминания:</AppText>
-        <AppTextInput placeholder={"Текст напоминания"} multiline />
+        <View style={styles.inputWrap}>
+          <AppText style={styles.inputLabel}>Текст уведомления:</AppText>
+          <AppTextInput
+            value={text}
+            placeholder={"Напомнить о..."}
+            multiline
+            numberOfLines={4}
+            onChangeText={text => setText(text)} />
+        </View>
+        <View style={styles.inputWrap}>
+          <AppText style={styles.inputLabel}>Время:</AppText>
+          <AppTimeInput
+            onHoursChange={(value: string) => setTime({ ...time, hours: value})}
+            onMinutesChange={(value: string) => setTime({ ...time, minutes: value})}
+            value={time} />
+        </View>
+        <View style={styles.inputWrap}>
+          <AppText style={styles.inputLabel}>Повтор: </AppText>
+          <AppDropdown
+            selectedValue={repeat}
+            onValueChange={(value: Repeat) => setRepeat(value)}
+            data={REPEAT_DATA} />
+        </View>
+        <Button title={"Создать уведомление"} onPress={onButtonPress}/>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: GRAY,
     paddingTop: 70
   },
   header: {
-    textAlign: "center"
+    textAlign: "center",
+    marginBottom: 10
   },
   form: {
-    width: "85%"
+    marginLeft: "10%",
+    marginRight: "10%"
+  },
+  inputWrap: {
+    marginBottom: 10
+  },
+  inputLabel: {
+    marginBottom: 5
   }
 });
 
